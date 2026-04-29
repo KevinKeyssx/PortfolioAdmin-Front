@@ -114,6 +114,9 @@ export const listaValoresStore = writable<ListaValores[]>([...initialListaValore
 export const lovValoresStore = writable<LovValor[]>([...initialLovValores]);
 export const selectedListaIdStore = writable<number | null>(1);
 
+export type ViewMode = 'card' | 'list';
+export const viewModeStore = writable<ViewMode>('card');
+
 // Derived stores
 export const selectedLovValores = derived(
   [lovValoresStore, selectedListaIdStore],
