@@ -3,13 +3,15 @@
         checked     : boolean;
         onchange?   : ( checked: boolean ) => void;
         disabled?   : boolean;
+        id?         : string;
     }
 
 
     let {
         checked = $bindable(),
         onchange,
-        disabled = false
+        disabled = false,
+        id,
     }: Props = $props();
 
 
@@ -24,6 +26,7 @@
 
 
 <button
+    { id }
     aria-checked    = { checked }
     aria-label      = "Toggle"
     type            = "button"

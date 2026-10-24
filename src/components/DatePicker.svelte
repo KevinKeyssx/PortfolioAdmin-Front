@@ -1,75 +1,122 @@
 <script lang="ts">
-  interface Props {
-    value: string;
-    onchange?: (value: string) => void;
-  }
+	import { Select } from './shared';
 
-  let { value = $bindable(''), onchange }: Props = $props();
-  
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
-  
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 15 }, (_, i) => currentYear - 10 + i);
-  const days = Array.from({ length: 31 }, (_, i) => i + 1);
-  
-  let selectedMonth = $state('');
-  let selectedDay = $state('');
-  let selectedYear = $state('');
+	interface Props {
+		value?		: string;
+		onchange?	: ( value : string ) => void;
+	}
 
-  $effect(() => {
-    if (value) {
-      // Parse "Month Day, Year" format
-      const match = value.match(/(\w+)\s+(\d+),\s+(\d+)/);
-      if (match) {
-        selectedMonth = match[1];
-        selectedDay = match[2];
-        selectedYear = match[3];
-      }
-    }
-  });
+	let {
+		value		= $bindable( '' ),
+		onchange,
+	} : Props = $props();
 
-  function updateValue() {
-    if (selectedMonth && selectedDay && selectedYear) {
-      value = `${selectedMonth} ${selectedDay}, ${selectedYear}`;
-      onchange?.(value);
-    }
-  }
+	const months = [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December',
+	];
+
+	const currentYear	= new Date().getFullYear();
+	const years			= Array.from( { length : 15 }, ( _, i : number ) : string => String( currentYear - 10 + i ) );
+	const days			= Array.from( { length : 31 }, ( _, i : number ) : string => String( i + 1 ) );
+
+	function parseDateParts( val : string ): { month : string; day : string; year : string } {
+		if ( !val ) return { month : '', day : '', year : '' };
+
+		const match = val.match( /(\w+)\s+(\d+),\s+(\d+)/ );
+		if ( match ) {
+			return {
+				month	: match[ 1 ],
+				day		: match[ 2 ],
+				year	: match[ 3 ],
+			};
+		}
+
+		const isoMatch = val.match( /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/ );
+		if ( isoMatch ) {
+			const monthIdx = Number( isoMatch[ 2 ] ) - 1;
+			if ( monthIdx >= 0 && monthIdx < months.length ) {
+				return {
+					month	: months[ monthIdx ],
+					day		: String( Number( isoMatch[ 3 ] ) ),
+					year	: isoMatch[ 1 ],
+				};
+			}
+		}
+
+		return { month : '', day : '', year : '' };
+	}
+
+	const initialParts	= parseDateParts( value );
+	let selectedMonth	= $state( initialParts.month );
+	let selectedDay		= $state( initialParts.day );
+	let selectedYear	= $state( initialParts.year );
+
+	$effect( () => {
+		const parts		= parseDateParts( value );
+		selectedMonth	= parts.month;
+		selectedDay		= parts.day;
+		selectedYear	= parts.year;
+	} );
+
+	function updateValue(): void {
+		if ( selectedMonth && selectedDay && selectedYear ) {
+			value = `${ selectedMonth } ${ selectedDay }, ${ selectedYear }`;
+			onchange?.( value );
+		}
+	}
+
+	function handleMonthChange( nextMonth : string ): void {
+		selectedMonth = nextMonth;
+		updateValue();
+	}
+
+	function handleDayChange( nextDay : string ): void {
+		selectedDay = nextDay;
+		updateValue();
+	}
+
+	function handleYearChange( nextYear : string ): void {
+		selectedYear = nextYear;
+		updateValue();
+	}
 </script>
 
 <div class="flex items-center gap-2">
-  <select
-    bind:value={selectedMonth}
-    onchange={updateValue}
-    class="flex-1 px-3 py-2.5 bg-surface rounded-xl border border-border/50 text-text text-sm focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-300 cursor-pointer"
-  >
-    <option value="">Mes</option>
-    {#each months as month}
-      <option value={month}>{month}</option>
-    {/each}
-  </select>
-  
-  <select
-    bind:value={selectedDay}
-    onchange={updateValue}
-    class="w-20 px-3 py-2.5 bg-surface rounded-xl border border-border/50 text-text text-sm focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-300 cursor-pointer"
-  >
-    <option value="">Día</option>
-    {#each days as day}
-      <option value={day.toString()}>{day}</option>
-    {/each}
-  </select>
-  
-  <select
-    bind:value={selectedYear}
-    onchange={updateValue}
-    class="w-24 px-3 py-2.5 bg-surface rounded-xl border border-border/50 text-text text-sm focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-300 cursor-pointer"
-  >
-    <option value="">Año</option>
-    {#each years as year}
-      <option value={year.toString()}>{year}</option>
-    {/each}
-  </select>
+	<div class="flex-1">
+		<Select
+			bind:value	= { selectedMonth }
+			items		= { months }
+			placeholder	= "Mes"
+			onchange	= { handleMonthChange }
+		/>
+	</div>
+
+	<div class="w-24">
+		<Select
+			bind:value	= { selectedDay }
+			items		= { days }
+			placeholder	= "Día"
+			onchange	= { handleDayChange }
+		/>
+	</div>
+
+	<div class="w-28">
+		<Select
+			bind:value	= { selectedYear }
+			items		= { years }
+			placeholder	= "Año"
+			onchange	= { handleYearChange }
+		/>
+	</div>
 </div>

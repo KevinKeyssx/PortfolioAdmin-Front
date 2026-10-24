@@ -1,124 +1,39 @@
+export * from './types/skills';
+export * from './types/lov';
+export * from './types/lov-val';
+
+import type { AnySkill }		from './types/skills';
+import type { ILovParent }		from './types/lov';
+import { TECH_SKILL_TYPES }		from './types/skills/tech-skills';
+
 // ──────────────────────────────────────────────────────────────
-// Entidades base
+// Compatibilidad con componentes existentes
 // ──────────────────────────────────────────────────────────────
 
-export interface ListaValores {
-    id          : number;
-    description : string;
-    active      : boolean;
-    skill       : string;
-    comment     : string;
-    created_at  : string;
-}
-
+export type ListaValores = ILovParent<AnySkill>;
 
 export interface LovValor {
-    id          : string;
-    lov_id      : number;
-    description : string;
-    active      : boolean;
-    skill       : Record<string, unknown>;
-    comment     : string;
-    created_at  : string;
+	id			: number | string;
+	lov_id		: number;
+	description	: string;
+	active		: boolean;
+	skill		: AnySkill;
+	comment		: string | null;
+	created_at	: string | null;
 }
 
+export const SKILL_TYPES = TECH_SKILL_TYPES;
 
 // ──────────────────────────────────────────────────────────────
-// Skills tipados por sección
-// ──────────────────────────────────────────────────────────────
-
-export interface AboutMeItem {
-    text    : string;
-    label   : string;
-}
-
-
-export interface AboutMeSkill {
-    items : AboutMeItem[];
-}
-
-
-export interface GenericSkill {
-    sort?   : number;
-    filter? : string;
-    date?   : string;
-}
-
-
-export interface EducationSkill {
-    date        : string;
-    sort        : number;
-    location    : string;
-}
-
-
-export interface EmploymentSkill {
-    job         : string;
-    date        : string;
-    sort        : number;
-    tools       : string[];
-    location?   : string;
-}
-
-
-export interface TechSkill {
-    type : string;
-}
-
-
-export interface CertificateSkill {
-    date        : string;
-    teacher?    : string;
-    description : string;
-}
-
-
-export interface PortfolioGithub {
-    url     : string;
-    stack   : 'Frontend' | 'Backend';
-}
-
-
-export interface PortfolioSkill {
-    img             : string;
-    url             : string;
-    github          : PortfolioGithub[];
-    status          : 'In Prod' | 'In Dev' | 'Beta';
-    technologies    : string[];
-}
-
-
-// ──────────────────────────────────────────────────────────────
-// Tipos y constantes
+// Tipos y constantes de navegación
 // ──────────────────────────────────────────────────────────────
 
 export type LovType =
-    | 'About'
-    | 'Education'
-    | 'Skills'
-    | 'OtherSkills'
-    | 'Certificates'
-    | 'Employement'
-    | 'Portfolio'
-    | 'Images';
-
-
-export const SKILL_TYPES = [
-    'Desarrollo Frontend',
-    'Desarrollo Backend',
-    'Bases de Datos',
-    'Lenguajes',
-    'Desarrollo Móvil',
-] as const;
-
-
-export const OTHER_SKILL_TYPES = [
-    'Herramientas',
-    'Servidores',
-    'Hosting',
-    'Otros',
-] as const;
-
-
-export const PORTFOLIO_STATUS  = [ 'In Prod', 'In Dev', 'Beta' ] as const;
-export const GITHUB_STACK      = [ 'Frontend', 'Backend' ] as const;
+	| 'About'
+	| 'Education'
+	| 'Skills'
+	| 'OtherSkills'
+	| 'Certificates'
+	| 'Employement'
+	| 'Portfolio'
+	| 'Images';
