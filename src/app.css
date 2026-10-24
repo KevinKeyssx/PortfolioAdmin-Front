@@ -1,7 +1,41 @@
 @import "tailwindcss/index.css";
 
+@font-face {
+  font-family: 'Saira';
+  src: url( '/fonts/Saira.woff2' ) format( 'woff2' );
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Saira';
+  src: url( '/fonts/Saira-Italic.woff2' ) format( 'woff2' );
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Saira-Italic';
+  src: url( '/fonts/Saira-Italic.woff2' ) format( 'woff2' );
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Saira-Italic';
+  src: url( '/fonts/Saira-Italic.woff2' ) format( 'woff2' );
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 @theme inline {
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-sans: 'Saira-Italic', 'Saira', system-ui, sans-serif;
+  --font-title: 'Saira', system-ui, sans-serif;
+  --font-heading: 'Saira', system-ui, sans-serif;
   --color-primary: #7c3aed;
   --color-primary-light: #a78bfa;
   --color-primary-dark: #6d28d9;
@@ -24,11 +58,24 @@
 
 body {
   font-family: var( --font-sans );
+  font-style: italic;
   background: linear-gradient( 135deg, #050810 0%, #12083a 30%, #1a0e42 50%, #0b1830 70%, #050810 100% );
   background-size: 400% 400%;
   animation: gradientShift 20s ease infinite;
   min-height: 100vh;
   color: var( --color-text );
+}
+
+h1, h2, h3, h4, h5, h6,
+.font-title,
+[data-font-title] {
+  font-family: var( --font-title );
+  font-style: normal;
+}
+
+input, textarea, select, button {
+  font-family: inherit;
+  font-style: inherit;
 }
 
 /* Animated background gradient */
