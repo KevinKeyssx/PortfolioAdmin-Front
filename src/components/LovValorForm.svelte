@@ -44,7 +44,7 @@
 	function createSkillPayload(
 		baseSkill?		: Record<string, unknown> | null,
 		targetLovId		: number = lovId,
-		targetLovType?	: string = lovType
+		targetLovType	: string | undefined = lovType
 	): Record<string, unknown> {
 		const defaults = getDefaultSkill( targetLovId, targetLovType );
 
@@ -157,7 +157,7 @@
 			<input
 				id			= "description"
 				type		= "text"
-				bind:value	= { description }
+				bind:value={ description }
 				required
 				placeholder	= "Nombre del valor..."
 				class		= "w-full px-4 py-3 bg-surface rounded-xl border border-border/50 text-text placeholder-text-muted focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-300"
@@ -202,7 +202,7 @@
 				<input
 					id			= "comment"
 					type		= "url"
-					bind:value	= { comment }
+					bind:value={ comment }
 					required
 					placeholder	= "https://res.cloudinary.com/... o enlace de imagen"
 					class		= "w-full px-4 py-3 bg-surface rounded-xl border border-border/50 text-text placeholder-text-muted focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-300"
@@ -211,7 +211,7 @@
 			{:else}
 				<textarea
 					id			= "comment"
-					bind:value	= { comment }
+					bind:value={ comment }
 					rows		= "3"
 					placeholder	= "Descripción opcional..."
 					class		= "w-full px-4 py-3 bg-surface rounded-xl border border-border/50 text-text placeholder-text-muted focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all duration-300 resize-none"
