@@ -21,6 +21,8 @@
 		ondelete,
 	} : Props = $props();
 
+	let listImageError = $state( false );
+
 	const updateMutation = useUpdateLovValMutation();
 
 	const currentLovType = $derived( () => {
@@ -29,12 +31,34 @@
 		return lista?.description as LovType | undefined;
 	} );
 
+	const portfolioImg = $derived(
+		( ( lov.skill ?? {} ) as Record<string, unknown> )?.img as string | undefined
+	);
+
+	const listImageUrl = $derived(
+		currentLovType() === 'Images'
+			? ( lov.comment ?? '' )
+			: currentLovType() === 'Portfolio'
+				? ( portfolioImg ?? '' )
+				: ''
+	);
+
+	const hasThumbnail = $derived(
+		currentLovType() === 'Images' || currentLovType() === 'Portfolio'
+	);
+
+	$effect( (): void => {
+		void lov.comment;
+		void portfolioImg;
+		listImageError = false;
+	} );
+
 	function handleToggle( checked : boolean ): void {
-		updateMutation.mutate( {
+		updateMutation.mutate({
 			id		: lov.id,
 			lovId	: lov.lov_id,
 			payload	: { active : checked },
-		} );
+		});
 	}
 
 	function handleDelete( e : MouseEvent ): void {
@@ -45,6 +69,10 @@
 	function handleEdit( e : MouseEvent ): void {
 		e.stopPropagation();
 		onedit?.();
+	}
+
+	function handleListImageError(): void {
+		listImageError = true;
 	}
 
 	interface SkillInfoItem {
@@ -58,21 +86,21 @@
 		const info  : SkillInfoItem[] = [];
 
 		if ( type === 'Education' || type === 'Employement' ) {
-			if ( skill.date ) info.push( { label : 'Período', value : skill.date as string } );
-			if ( skill.job ) info.push( { label : 'Cargo', value : skill.job as string } );
-			if ( skill.location ) info.push( { label : 'Ubicación', value : skill.location as string } );
-			if ( skill.tools ) info.push( { label : 'Tools', value : ( skill.tools as string[] ).join( ', ' ) } );
+			if ( skill.date ) info.push({ label : 'Período', value : skill.date as string });
+			if ( skill.job ) info.push({ label : 'Cargo', value : skill.job as string });
+			if ( skill.location ) info.push({ label : 'Ubicación', value : skill.location as string });
+			if ( skill.tools ) info.push({ label : 'Tools', value : ( skill.tools as string[] ).join( ', ' ) });
 		} else if ( type === 'Skills' || type === 'OtherSkills' ) {
-			if ( skill.type ) info.push( { label : 'Tipo', value : skill.type as string } );
+			if ( skill.type ) info.push({ label : 'Tipo', value : skill.type as string });
 		} else if ( type === 'Certificates' ) {
-			if ( skill.date ) info.push( { label : 'Fecha', value : skill.date as string } );
-			if ( skill.teacher ) info.push( { label : 'Instructor', value : skill.teacher as string } );
+			if ( skill.date ) info.push({ label : 'Fecha', value : skill.date as string });
+			if ( skill.teacher ) info.push({ label : 'Instructor', value : skill.teacher as string });
 		} else if ( type === 'Portfolio' ) {
-			if ( skill.status ) info.push( { label : 'Estado', value : skill.status as string } );
-			if ( skill.technologies ) info.push( { label : 'Tech', value : ( skill.technologies as string[] ).slice( 0, 3 ).join( ', ' ) } );
+			if ( skill.status ) info.push({ label : 'Estado', value : skill.status as string });
+			if ( skill.technologies ) info.push({ label : 'Tech', value : ( skill.technologies as string[] ).slice( 0, 3 ).join( ', ' ) });
 		} else if ( type === 'About' ) {
-			if ( skill.sort ) info.push( { label : 'Orden', value : String( skill.sort ) } );
-			if ( skill.items ) info.push( { label : 'Items', value : `${ ( skill.items as unknown[] ).length } elementos` } );
+			if ( skill.sort ) info.push({ label : 'Orden', value : String( skill.sort ) });
+			if ( skill.items ) info.push({ label : 'Items', value : `${ ( skill.items as unknown[] ).length } elementos` });
 		}
 
 		return info;
@@ -103,21 +131,29 @@
 	{/if}
 
 	<!-- Top accent line -->
-	<div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-accent/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+	<div class="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-accent/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
 	<div class="flex items-start gap-4">
-		<!-- Thumbnail for Portfolio -->
-		{#if currentLovType() === 'Portfolio' && ( lov.skill as Record<string, unknown> )?.img }
-			<div class="shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-surface">
-				<img
-					src		= { ( lov.skill as Record<string, unknown> ).img as string }
-					alt		= { lov.description }
-					class	= "w-full h-full object-cover"
-				/>
+		<!-- Thumbnail for Portfolio / Images -->
+		{#if hasThumbnail && listImageUrl }
+			<div class="shrink-0 w-20 h-16 rounded-xl overflow-hidden bg-surface border border-white/10 ring-1 ring-white/5 group-hover:ring-primary/30 transition-all flex items-center justify-center">
+				{#if !listImageError }
+					<img
+						src		= { listImageUrl }
+						alt		= { lov.description }
+						loading	= "lazy"
+						class	= "w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+						onerror	= { handleListImageError }
+					/>
+				{:else}
+					<svg class="w-6 h-6 text-text-muted/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+					</svg>
+				{/if}
 			</div>
 		{:else}
 			<!-- Icon placeholder -->
-			<div class="shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center shadow-sm shadow-primary/10">
+			<div class="shrink-0 w-10 h-10 rounded-lg bg-linear-to-br from-primary/20 to-accent/10 flex items-center justify-center shadow-sm shadow-primary/10">
 				<svg class="w-5 h-5 text-primary-light drop-shadow-[0_0_4px_rgba(167,139,250,0.3)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
 				</svg>
@@ -136,6 +172,10 @@
 							{ status }
 						</span>
 					{/if}
+				{:else if currentLovType() === 'Images' }
+					<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-accent/20 text-accent border border-accent/20">
+						Imagen
+					</span>
 				{/if}
 			</div>
 
@@ -145,14 +185,14 @@
 					{#each skillInfo as info}
 						<span class="inline-flex items-center px-2 py-0.5 text-xs bg-surface rounded-md text-text-muted">
 							<span class="font-medium text-primary-light/70 mr-1">{ info.label }:</span>
-							<span class="truncate max-w-[150px]">{ info.value }</span>
+							<span class="truncate max-w-37.5">{ info.value }</span>
 						</span>
 					{/each}
 				</div>
 			{/if}
 
 			<!-- Comment -->
-			{#if lov.comment }
+			{#if lov.comment && currentLovType() !== 'Images' }
 				<p class="mt-2 text-sm text-text-muted line-clamp-1">{ lov.comment }</p>
 			{/if}
 		</div>

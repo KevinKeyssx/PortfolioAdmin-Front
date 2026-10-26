@@ -6,8 +6,8 @@
 
 <!-- Decorative background -->
 <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-    <div class="absolute -top-24 left-1/4 w-[500px] h-[500px] bg-danger/10 rounded-full blur-[120px] animate-float"></div>
-    <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px] animate-float" style="animation-delay: 2s;"></div>
+    <div class="absolute -top-24 left-1/4 w-125 h-125 bg-danger/10 rounded-full blur-[120px] animate-float"></div>
+    <div class="absolute bottom-0 right-1/4 w-100 h-100 bg-primary/10 rounded-full blur-[100px] animate-float" style="animation-delay: 2s;"></div>
 </div>
 
 

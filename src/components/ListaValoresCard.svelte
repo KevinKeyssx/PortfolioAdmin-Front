@@ -71,7 +71,7 @@
 		{/if}
 
 		<!-- Top accent line -->
-		<div class="absolute top-0 left-0 right-0 h-[2px] bg-linear-to-r from-transparent via-primary to-transparent opacity-0 transition-opacity duration-500 {
+		<div class="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-primary to-transparent opacity-0 transition-opacity duration-500 {
 			active && !isDeleting
 				? 'opacity-100'
 				: 'group-hover:opacity-60'

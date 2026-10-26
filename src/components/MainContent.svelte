@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { useIsMutating }			from '@tanstack/svelte-query';
-	import { viewModeStore }			from '../lib/store';
-	import {
-		useLovDetailQuery,
+	import { useIsMutating } from '@tanstack/svelte-query';
+
+    import {
+        useLovDetailQuery,
 		useDeleteLovValMutation,
 	}									from '$lib/services/lov.service';
+    import { viewModeStore }			from '../lib/store';
 	import LovDetailSkeleton			from './skeletons/LovDetailSkeleton.svelte';
 	import LovValorCard					from './LovValorCard.svelte';
 	import LovValorGridCard				from './LovValorGridCard.svelte';
@@ -23,7 +24,6 @@
 	let {
 		lovId,
 		title,
-		count,
 		customFields,
 	} : Props = $props();
 
@@ -250,6 +250,7 @@
 			bind:open		= { showForm }
 			lovId			= { lovId }
 			lov				= { editingLov }
+			lovType			= { title }
 			onclose			= { handleCloseForm }
 			{ customFields }
 		/>
