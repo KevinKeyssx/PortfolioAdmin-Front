@@ -181,8 +181,8 @@
 			<div class={ $viewModeStore === 'list' ? 'grid gap-3' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' }>
 				<!-- Skeleton animado al crear un nuevo valor -->
 				{#if isCreatingVal.current > 0 }
-					<div class="animate-scale-in">
-						<LovDetailSkeleton count={ 1 } grid={ $viewModeStore === 'card' } />
+					<div class="animate-scale-in w-full h-full">
+						<LovDetailSkeleton count={ 1 } grid={ $viewModeStore === 'card' } container={ false } />
 					</div>
 				{/if}
 
