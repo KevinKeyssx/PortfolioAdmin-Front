@@ -1,5 +1,5 @@
 <script lang="ts">
-	import DatePicker				from '../../../../components/DatePicker.svelte';
+	import { DatePicker }				from '../../../../components/shared';
 	import type { CertificateSkill }	from '../../../../lib/types/skills/certificates';
 
 	interface Props {
@@ -30,7 +30,7 @@
 	<div class="space-y-2">
 		<label for="certificate-date" class="block text-sm font-medium text-text-muted">Fecha</label>
 
-		<DatePicker bind:value={ cert.date } />
+		<DatePicker id="certificate-date" bind:value={ cert.date } maxValue="today" />
 	</div>
 
 	<div class="space-y-2">
